@@ -39,9 +39,10 @@ def update_mse_grad(test_data,t,W,C):
     t = t.reshape(len(t),1)
     z = W@x
     g = sigmoid(z)
+    mse = float((1/2)*(g-t).T@(g-t))
     grad_mse+= ((g-t)*(g*(1-g)))@x.T
     
-  return grad_mse
+  return grad_mse,mse
 
 
 def find_W(data, m_iterations,n_classes,alpha):
@@ -55,15 +56,18 @@ def find_W(data, m_iterations,n_classes,alpha):
     t_k2 = np.array([0,1,0]) #class2
     t_k3 = np.array([0,0,1]) #class3
     t  = [t_k1, t_k2, t_k3]
-
+    mse_vector = []
     for m in range(m_iterations):
-        
         W_prev = W
-        grad_mse = np.zeros((C,D+1))  
+        grad_mse = np.zeros((C,D+1))
+        mse = 0  
         for (data_k,t_k) in zip(data,t):
-          grad_mse += update_mse_grad(data_k,t_k,W_prev,C)
+          d_grad_mse,d_mse = update_mse_grad(data_k,t_k,W_prev,C)
+          grad_mse += d_grad_mse 
+          mse += d_mse
+        mse_vector.append(mse)
         W = W_prev - alpha*grad_mse
-    return W
+    return W,mse_vector
     
 
 def test_instance (W,x,solution,confusion):
@@ -90,9 +94,11 @@ def test_sequence(W,x_sequence,solution_sequence,n_classes,confusion_matrix):
 
 
 
-def assignment_1_trainingset(x_sequence,t_sequence,n_classes):
+def assignment_1_trainingset(x_sequence,t_sequence,n_classes, n_iterations, alpha):
   confusion_matrix = np.zeros((3,3))
-  W = find_W(x_sequence, 3000,n_classes, 0.01)
+  W,mse_vector = find_W(x_sequence, n_iterations,n_classes, alpha)
+  plt.plot(mse_vector)
+  plt.show()
   tot = 0
   correct = 0
   wrong = 0
