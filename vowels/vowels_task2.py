@@ -142,7 +142,7 @@ def train_test_GMM(start,end, n_components):
     probability = 0
     print("Training GMM")
     #print(len(train_map["uw"]))
-    probability_vectors = np.empty((12,len(train_map["uw"])))
+    probability_vectors = np.zeros((12,len(train_map["uw"])))
     predicted_indeces = np.empty((12,len(train_map["uw"])))
     for i,sound in enumerate(train_map):
         x = np.asfarray(train_map[sound], float)
