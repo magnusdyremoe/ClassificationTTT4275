@@ -11,14 +11,14 @@ def main():
     print("\n______________________________\n")
 
     print("Task 2, 2 gaussians")
-    gmm2_train, gmm2_test = vt2.train_test_GMM_v2(0,70,2)
+    gmm2_train, gmm2_test = vt2.train_test_GMM(0,70,2)
     #lct.print_confusion(gmm2_train)
     #lct.print_confusion(gmm2_test)
 
     print("\n_______________________________\n")
 
     print("Task 2, 3 gaussians")
-    gmm3_train, gmm3_test = vt2.train_test_GMM_v2(0,70,3)
+    gmm3_train, gmm3_test = vt2.train_test_GMM(0,70,3)
     #lct.print_confusion(gmm3_train)
     #lct.print_confusion(gmm3_test)
 

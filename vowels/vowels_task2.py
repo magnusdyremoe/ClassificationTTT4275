@@ -80,6 +80,7 @@ def train_test_GMM(start,end, n_components):
 
 
 
+
 def train_test_GMM_v2(start,end, n_components):
     train_map,test_map = v.generate_x("data.dat",0,70)
     sound_list = generate_sound_list(train_map)
@@ -89,8 +90,8 @@ def train_test_GMM_v2(start,end, n_components):
     confusion_matrix_train = np.zeros((12,12))
     probability_training = np.zeros((12,len(train_map["uw"])))
     probability_testing = np.zeros((12,len(test_map["uw"])))
-    predicted_indeces_training = np.empty((12,len(train_map["uw"])))
-    predicted_indeces_testing = np.empty((12,len(test_map["uw"])))
+    predicted_indeces_training = np.zeros((12,len(train_map["uw"])))
+    predicted_indeces_testing = np.zeros((12,len(test_map["uw"])))
 
     print("Training GMM")
     for i,sound in enumerate(train_map):
