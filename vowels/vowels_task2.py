@@ -4,7 +4,7 @@ from scipy.stats import multivariate_normal
 from sklearn.mixture import GaussianMixture as GMM
 import vowels_task1 as v
 
-"""
+
 def map_join_array(type_map):
     x = []
     for sound in type_map:
@@ -24,8 +24,8 @@ def train_test_GMM(start,end, n_components):
     x_train = map_join_array(train_map)
     x_test = map_join_array(test_map)
     print("Training GMM")
-    probabilities_train = np.empty((12,x_train.shape[0]))
-    probabilities_test = np.empty((12,x_test.shape[0]))
+    probabilities_train = np.zeros((12,x_train.shape[0]))
+    probabilities_test = np.zeros((12,x_test.shape[0]))
     
 
     for i,sound in enumerate(train_map):
@@ -169,3 +169,5 @@ def train_test_GMM(start,end, n_components):
     #print(confusion_matrix_train)
     print(correct/total)
     return confusion_matrix_train, confusion_matrix_test
+
+    """
