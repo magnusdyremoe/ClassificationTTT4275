@@ -1,4 +1,8 @@
 
+#Code taken from github user kristeey
+#https://github.com/kristeey/TTT4275_EDC/
+
+
 vowels = ['ae', 'ah', 'aw', 'eh', 'er', 'ei', 'ih', 'iy', 'oa', 'oo', 'uh', 'uw']
 
 def print_confusion(conf):
