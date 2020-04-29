@@ -80,89 +80,52 @@ def train_test_GMM(start,end, n_components):
 
 
 
-"""
-
-def sample_mean(dataset):
-    sample_size = len(dataset)
-    N = len(dataset[0])
-    x_sum = [0]*N
-    for vector in range (sample_size):
-        for element in range (N):
-            x_sum[element] += (int(dataset[vector][element]))
-    for element in range(len(x_sum)):
-        x_sum[element] /= sample_size
-        
-    return x_sum
-
-def cov_matrix(dataset): #CROSS CHECK THAT THIS IS CORRECT!!
-    N = len(dataset[0])
-    sample_size = len(dataset)
-    mean = sample_mean(dataset)
-    cov_matrix = np.zeros((N,N))
-    x = np.asfarray(dataset, float)
-    cov_matrix = np.dot((x-mean).T,(x-mean))/(sample_size-1)  
-    return cov_matrix
-
-def make_sequence(sounds):
-    list_of_sounds= []
-    for sound in sounds:
-        list_of_sounds.append(sound)
-    return list_of_sounds
-
-def generate_mean_cov_map(filename,start,end):
-    mean_cov_map = {}
-    
-    classes_map = ext.extract_classes_map(filename)
-    
-    list_of_sounds = make_sequence(classes_map)
-    for sound in classes_map:
-        mean_cov_map[sound] =[sample_mean(classes_map[sound][start:end])]
-        mean_cov_map[sound].append(cov_matrix(classes_map[sound][start:end]))
-    return mean_cov_map,list_of_sounds
-
-def generate_x(filename,start,end):
-    test_map = {}
-    train_map={}
-    classes_map = ext.extract_classes_map(filename)
-    for sound in classes_map:
-        train_map[sound] = classes_map[sound][start:end]
-        test_map[sound] = classes_map[sound][end:]
-    return train_map,test_map
-
-def train_test_GMM(start,end, n_components):
-    mean_cov_map,sound_list = generate_mean_cov_map("data.dat",start,end)
-    train_map,test_map = generate_x("data.dat",start,end)
+def train_test_GMM_v2(start,end, n_components):
+    train_map,test_map = v.generate_x("data.dat",0,70)
+    sound_list = generate_sound_list(train_map)
     #---------------------Training------------------------------
     
-    correct =  0
-    wrong = 0
-    total = 0
     confusion_matrix_test = np.zeros((12,12))
     confusion_matrix_train = np.zeros((12,12))
+    probability_training = np.zeros((12,len(train_map["uw"])))
+    probability_testing = np.zeros((12,len(test_map["uw"])))
+    predicted_indeces_training = np.empty((12,len(train_map["uw"])))
+    predicted_indeces_testing = np.empty((12,len(test_map["uw"])))
 
-    probability = 0
     print("Training GMM")
-    #print(len(train_map["uw"]))
-    probability_vectors = np.zeros((12,len(train_map["uw"])))
-    predicted_indeces = np.empty((12,len(train_map["uw"])))
     for i,sound in enumerate(train_map):
         x = np.asfarray(train_map[sound], float)
+        x_test = np.asfarray(test_map[sound])
         gmm = GMM(n_components=n_components, covariance_type='diag', reg_covar=1e-4, random_state=0)
         gmm.fit(train_map[sound], sound_list)
         for j in range(n_components):
             N = multivariate_normal(mean=gmm.means_[j], cov=gmm.covariances_[j], allow_singular=True)
-            probability += gmm.weights_[j] * N.pdf(x)
+            probability_training[i] += gmm.weights_[j] * N.pdf(x)
+            probability_testing[i] += gmm.weights_[j] * N.pdf(x_test)
         
-        
-        probability_vectors[i] = probability 
-        predicted_indeces[i] = np.argmax(probability_vectors,axis = 0)
-    for j,sound in enumerate(predicted_indeces):
+        predicted_indeces_training[i] = np.argmax(probability_training,axis = 0)
+        predicted_indeces_testing[i] = np.argmax(probability_testing,axis = 0)
+    correct =  0
+    wrong = 0
+    total = 0
+    for j,sound in enumerate(predicted_indeces_training):
         for guess in sound:
             if int(guess) == j:
                     correct += 1
             else:
                 wrong += 1
             confusion_matrix_train[j][int(guess)] += 1
+            total += 1
+    correct = 0
+    wrong = 0
+    total = 0       
+    for j,sound in enumerate(predicted_indeces_testing):
+        for guess in sound:
+            if int(guess) == j:
+                    correct += 1
+            else:
+                wrong += 1
+            confusion_matrix_test[j][int(guess)] += 1
             total += 1
 
     print("Training : ")
@@ -171,4 +134,3 @@ def train_test_GMM(start,end, n_components):
     print(correct/total)
     return confusion_matrix_train, confusion_matrix_test
 
-    """
