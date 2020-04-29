@@ -15,7 +15,7 @@ def sample_mean(dataset):
         
     return x_sum
 
-def cov_matrix(dataset): #CROSS CHECK THAT THIS IS CORRECT!!
+def cov_matrix(dataset): 
     N = len(dataset[0])
     sample_size = len(dataset)
     mean = sample_mean(dataset)

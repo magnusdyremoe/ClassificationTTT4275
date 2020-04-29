@@ -20,7 +20,7 @@ def main():
     print("Task 2, 3 gaussians")
     gmm3_train, gmm3_test = vt2.train_test_GMM(0,70,3)
     #lct.print_confusion(gmm3_train)
-    #lct.print_confusion(gmm3_test)
+    lct.print_confusion(gmm3_test)
 
 
 main()

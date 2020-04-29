@@ -72,66 +72,8 @@ def train_test_GMM(start,end, n_components):
     print("Training: ")
     print(confusion_matrix_train)
     print("training ratio:",ratio_training)
-
-
-   
     
     return confusion_matrix_train, confusion_matrix_test
 
 
-
-
-def train_test_GMM_v2(start,end, n_components):
-    train_map,test_map = v.generate_x("data.dat",0,70)
-    sound_list = generate_sound_list(train_map)
-    #---------------------Training------------------------------
-    
-    confusion_matrix_test = np.zeros((12,12))
-    confusion_matrix_train = np.zeros((12,12))
-    probability_training = np.zeros((12,len(train_map["uw"])))
-    probability_testing = np.zeros((12,len(test_map["uw"])))
-    predicted_indeces_training = np.zeros((12,len(train_map["uw"])))
-    predicted_indeces_testing = np.zeros((12,len(test_map["uw"])))
-
-    print("Training GMM")
-    for i,sound in enumerate(train_map):
-        x = np.asfarray(train_map[sound], float)
-        x_test = np.asfarray(test_map[sound])
-        gmm = GMM(n_components=n_components, covariance_type='diag', reg_covar=1e-4, random_state=0)
-        gmm.fit(train_map[sound], sound_list)
-        for j in range(n_components):
-            N = multivariate_normal(mean=gmm.means_[j], cov=gmm.covariances_[j], allow_singular=True)
-            probability_training[i] += gmm.weights_[j] * N.pdf(x)
-            probability_testing[i] += gmm.weights_[j] * N.pdf(x_test)
-        
-        predicted_indeces_training[i] = np.argmax(probability_training,axis = 0)
-        predicted_indeces_testing[i] = np.argmax(probability_testing,axis = 0)
-    correct =  0
-    wrong = 0
-    total = 0
-    for j,sound in enumerate(predicted_indeces_training):
-        for guess in sound:
-            if int(guess) == j:
-                    correct += 1
-            else:
-                wrong += 1
-            confusion_matrix_train[j][int(guess)] += 1
-            total += 1
-    correct = 0
-    wrong = 0
-    total = 0       
-    for j,sound in enumerate(predicted_indeces_testing):
-        for guess in sound:
-            if int(guess) == j:
-                    correct += 1
-            else:
-                wrong += 1
-            confusion_matrix_test[j][int(guess)] += 1
-            total += 1
-
-    print("Training : ")
-    print(confusion_matrix_train)
-    #print(confusion_matrix_train)
-    print(correct/total)
-    return confusion_matrix_train, confusion_matrix_test
 
