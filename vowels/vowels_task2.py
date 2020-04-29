@@ -23,7 +23,6 @@ def train_test_GMM(start,end, n_components):
 
     x_train = map_join_array(train_map)
     x_test = map_join_array(test_map)
-    print("Training GMM")
     probabilities_train = np.zeros((12,x_train.shape[0]))
     probabilities_test = np.zeros((12,x_test.shape[0]))
     
@@ -58,9 +57,10 @@ def train_test_GMM(start,end, n_components):
     correct = 0
     wrong = 0
     total = 0
-    print("Train: ")
+    print("Testing: ")
     print(confusion_matrix_test)
     print("Testing ratio:",ratio_test)
+    print("\n--------------------------------\n")
     for index in range(len(predict_train)):
         if int(predict_train[index]) == true_train[index]:
             correct += 1
@@ -69,6 +69,7 @@ def train_test_GMM(start,end, n_components):
         confusion_matrix_train[true_train[index]][int(predict_train[index])] += 1
         total += 1
     ratio_training = correct/total
+    print("Training: ")
     print(confusion_matrix_train)
     print("training ratio:",ratio_training)
 
